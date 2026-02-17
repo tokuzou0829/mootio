@@ -7,7 +7,9 @@ Shake your phone every day to join the chain and send a notification to your fri
 
 ## Screenshots
 
-|                              |                              |                              |
-| ---------------------------- | ---------------------------- | ---------------------------- |
-| ![Sample 1](/samples/1.jpeg) | ![Sample 2](/samples/2.jpeg) | ![Sample 3](/samples/3.jpeg) |
-| ![Sample 4](/samples/4.jpeg) | ![Sample 5](/samples/5.jpeg) | ![Sample 6](/samples/6.jpeg) |
+![Sample 1](/samples/1.jpeg)
+![Sample 2](/samples/2.jpeg)
+![Sample 3](/samples/3.jpeg)
+![Sample 4](/samples/4.jpeg)
+![Sample 5](/samples/5.jpeg)
+![Sample 6](/samples/6.jpeg)
