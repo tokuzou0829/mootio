@@ -5,10 +5,17 @@ import { NavBar } from "@/components/nav-bar";
 import { auth } from "@/lib/auth";
 
 export default async function Nav({ children }: { children: React.ReactNode }) {
-	const session = await auth.api.getSession({
-		headers: await headers(),
-	});
-	const userId = session?.user.id;
+	let userId: string | undefined;
+
+	try {
+		const session = await auth.api.getSession({
+			headers: await headers(),
+		});
+		userId = session?.user.id;
+	} catch (error) {
+		console.error("Failed to get session in app layout Nav", error);
+	}
+
 	return (
 		<>
 			<Image
