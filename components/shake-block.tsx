@@ -163,6 +163,7 @@ export function ShakeBlock({ className, onShake }: ShakeBlockProps) {
 	const lastVibrateRef = useRef(0);
 	const tiltGravityRef = useRef({ x: 0, y: 1 });
 	const orientationAngleRef = useRef(0);
+	const androidYAxisSignRef = useRef(1);
 	const lastAccelRef = useRef<{ x: number; y: number; z: number } | null>(null);
 	const autoRequestAttemptedRef = useRef(false);
 	const [layout, setLayout] = useState<Layout>(DEFAULT_LAYOUT);
@@ -519,6 +520,16 @@ export function ShakeBlock({ className, onShake }: ShakeBlockProps) {
 		if (typeof window === "undefined") {
 			return;
 		}
+		const userAgent = window.navigator.userAgent ?? "";
+		if (/Android/i.test(userAgent)) {
+			androidYAxisSignRef.current = -1;
+		}
+	}, []);
+
+	useEffect(() => {
+		if (typeof window === "undefined") {
+			return;
+		}
 		const updateAngle = () => {
 			orientationAngleRef.current = getOrientationAngle();
 		};
@@ -562,8 +573,9 @@ export function ShakeBlock({ className, onShake }: ShakeBlockProps) {
 			}
 			hasDeviceOrientationRef.current = true;
 			const angle = orientationAngleRef.current;
+			const ySign = androidYAxisSignRef.current;
 			const rawX = event.gamma / 45;
-			const rawY = event.beta / 45;
+			const rawY = (event.beta / 45) * ySign;
 			const rotated = rotateVector({ x: rawX, y: rawY }, angle);
 			const x = clamp(rotated.x, -1, 1);
 			const y = clamp(rotated.y, -1, 1);
@@ -580,8 +592,9 @@ export function ShakeBlock({ className, onShake }: ShakeBlockProps) {
 			}
 			hasDeviceOrientationRef.current = true;
 			const angle = orientationAngleRef.current;
+			const ySign = androidYAxisSignRef.current;
 			const toScreen = (x: number, y: number) =>
-				rotateVector({ x, y: -y }, angle);
+				rotateVector({ x, y: -y * ySign }, angle);
 
 			const accelScreen = acceleration
 				? (() => {
