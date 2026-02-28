@@ -117,6 +117,11 @@ const rotateVector = (vector: { x: number; y: number }, angle: number) => {
 	};
 };
 
+const isLandscapeAngle = (angle: number) => {
+	const normalized = ((Math.round(angle) % 360) + 360) % 360;
+	return normalized === 90 || normalized === 270;
+};
+
 const computeLayout = (width: number, height: number): Layout => {
 	const scale = Math.min(width / BASE_WIDTH, height / BASE_HEIGHT);
 	const offsetX = (width - BASE_WIDTH * scale) / 2;
@@ -574,7 +579,8 @@ export function ShakeBlock({ className, onShake }: ShakeBlockProps) {
 			hasDeviceOrientationRef.current = true;
 			const angle = orientationAngleRef.current;
 			const ySign = androidYAxisSignRef.current;
-			const rawX = event.gamma / 45;
+			const xSign = ySign === -1 && isLandscapeAngle(angle) ? -1 : 1;
+			const rawX = (event.gamma / 45) * xSign;
 			const rawY = (event.beta / 45) * ySign;
 			const rotated = rotateVector({ x: rawX, y: rawY }, angle);
 			const x = clamp(rotated.x, -1, 1);
@@ -593,8 +599,9 @@ export function ShakeBlock({ className, onShake }: ShakeBlockProps) {
 			hasDeviceOrientationRef.current = true;
 			const angle = orientationAngleRef.current;
 			const ySign = androidYAxisSignRef.current;
+			const xSign = ySign === -1 && isLandscapeAngle(angle) ? -1 : 1;
 			const toScreen = (x: number, y: number) =>
-				rotateVector({ x, y: -y * ySign }, angle);
+				rotateVector({ x: x * xSign, y: -y * ySign }, angle);
 
 			const accelScreen = acceleration
 				? (() => {
